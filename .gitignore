@@ -130,3 +130,7 @@ dmypy.json
 
 # Security
 settings.py
+
+# Support
+.vscode/
+bot.log
