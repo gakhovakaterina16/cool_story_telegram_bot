@@ -1,6 +1,8 @@
 import logging
 import settings
-from random import randint
+from emoji import emojize
+from glob import glob
+from random import randint, choice
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 
@@ -8,8 +10,9 @@ logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 
 def greet_user(update, context):
-    print('Вызван /start')
-    update.message.reply_text('Привет, пользователь!')
+    smile = choice(settings.USER_EMOJI)
+    smile = emojize(smile, use_aliases=True)
+    update.message.reply_text(f'Привет! {smile}')
 
 
 def talk_to_me(update, context):
@@ -28,6 +31,14 @@ def guess_number(update, context):
     else:
         message = 'Введите целое число'
     update.message.reply_text(message)
+
+
+def send_monet_pic(update, context):
+    monet_pics_list = glob('images/monet*.jp*g')
+    monet_pic_filename = choice(monet_pics_list)
+    chat_id = update.effective_chat.id
+    context.bot.send_photo(chat_id=chat_id,
+                           photo=open(monet_pic_filename, 'rb'))
 
 
 def play_random_numbers(user_number):
@@ -49,6 +60,7 @@ def main():
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler('start', greet_user))
     dp.add_handler(CommandHandler('guess', guess_number))
+    dp.add_handler(CommandHandler('monet', send_monet_pic))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     logging.info('The bot has started!')
