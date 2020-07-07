@@ -4,6 +4,7 @@ from emoji import emojize
 from glob import glob
 from random import randint, choice
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram import ReplyKeyboardMarkup
 
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
@@ -13,12 +14,14 @@ def get_smile(user_data):
     if 'emoji' not in user_data:
         smile = choice(settings.USER_EMOJI)
         return emojize(smile, use_aliases=True)
-    return user_data['emoji']   
+    return user_data['emoji']
 
 
 def greet_user(update, context):
     context.user_data['emoji'] = get_smile(context.user_data)
-    update.message.reply_text(f'Привет! {context.user_data["emoji"]}')
+    greet_keyboard = ReplyKeyboardMarkup([['Даёшь Моне!', 'Поменять смайлик!']])
+    text = f'Привет! {context.user_data["emoji"]}'
+    update.message.reply_text(text, reply_markup=greet_keyboard)
 
 
 def talk_to_me(update, context):
@@ -62,14 +65,24 @@ def play_random_numbers(user_number):
     return message
 
 
+def change_smile(update, context):
+    if 'emoji' in context.user_data:
+        del context.user_data['emoji']
+    context.user_data['emoji'] = get_smile(context.user_data)
+    update.message.reply_text(f'Твой новый смайлик: {context.user_data["emoji"]}')
+
+
+
 def main():
     mybot = Updater(settings.API_KEY, use_context=True)
 
     dp = mybot.dispatcher
-    dp.add_handler(CommandHandler('start', greet_user))
-    dp.add_handler(CommandHandler('guess', guess_number))
-    dp.add_handler(CommandHandler('monet', send_monet_pic))
-    dp.add_handler(MessageHandler(Filters.text, talk_to_me))
+    dp.add_handler(CommandHandler('start', greet_user, pass_user_data=True))
+    dp.add_handler(CommandHandler('guess', guess_number, pass_user_data=True))
+    dp.add_handler(CommandHandler('monet', send_monet_pic, pass_user_data=True))
+    dp.add_handler(MessageHandler(Filters.regex('^Даёшь Моне!$'), send_monet_pic, pass_user_data=True))
+    dp.add_handler(MessageHandler(Filters.regex('^Поменять смайлик!$'), change_smile, pass_user_data=True))
+    dp.add_handler(MessageHandler(Filters.text, talk_to_me, pass_user_data=True))
 
     logging.info('The bot has started!')
     mybot.start_polling()
