@@ -9,16 +9,24 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 
+def get_smile(user_data):
+    if 'emoji' not in user_data:
+        smile = choice(settings.USER_EMOJI)
+        return emojize(smile, use_aliases=True)
+    return user_data['emoji']   
+
+
 def greet_user(update, context):
-    smile = choice(settings.USER_EMOJI)
-    smile = emojize(smile, use_aliases=True)
-    update.message.reply_text(f'Привет! {smile}')
+    context.user_data['emoji'] = get_smile(context.user_data)
+    update.message.reply_text(f'Привет! {context.user_data["emoji"]}')
 
 
 def talk_to_me(update, context):
-    user_text = update.message.text
-    print(user_text)
-    update.message.reply_text(user_text)
+    context.user_data['emoji'] = get_smile(context.user_data)
+    username = update.effective_user.first_name
+    text = update.message.text
+    update.message.reply_text(f'Привет, {username} {context.user_data["emoji"]}!\
+                              Ты написал: {text}')
 
 
 def guess_number(update, context):
