@@ -4,7 +4,7 @@ from emoji import emojize
 from glob import glob
 from random import randint, choice
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from telegram import ReplyKeyboardMarkup
+from telegram import ReplyKeyboardMarkup, KeyboardButton
 
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
@@ -19,8 +19,16 @@ def get_smile(user_data):
 
 def greet_user(update, context):
     context.user_data['emoji'] = get_smile(context.user_data)
-    greet_keyboard = ReplyKeyboardMarkup([['Даёшь Моне!',
-                                           'Поменять смайлик!']])
+    contact_button = KeyboardButton('Прислать контакты',
+                                    request_contact=True)
+    location_button = KeyboardButton('Прислать координаты',
+                                     request_location=True)
+    greet_keyboard = ReplyKeyboardMarkup(
+                                         [
+                                          ['Даёшь Моне!', 'Поменять смайлик!'],
+                                          [contact_button, location_button]
+                                         ]
+                                         )
     text = f'Привет! {context.user_data["emoji"]}'
     update.message.reply_text(text, reply_markup=greet_keyboard)
 
