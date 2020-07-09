@@ -22,7 +22,7 @@ def greet_user(update, context):
     contact_button = KeyboardButton('Прислать контакты',
                                     request_contact=True)
     location_button = KeyboardButton('Прислать координаты',
-                                     request_location=True)
+                                     request_location=True)                                
     greet_keyboard = ReplyKeyboardMarkup(
                                          [
                                           ['Даёшь Моне!', 'Поменять смайлик!'],
@@ -33,6 +33,18 @@ def greet_user(update, context):
     update.message.reply_text(text, reply_markup=greet_keyboard)
 
 
+def get_contact(update, context):
+    print(update.message.contact)
+    text = f'Готово! {get_smile(context.user_data)}'
+    update.message.reply_text(text)    
+
+
+def get_location(update, context):
+    print(update.message.location)
+    text = f'Готово! {get_smile(context.user_data)}'
+    update.message.reply_text(text)   
+
+
 def talk_to_me(update, context):
     context.user_data['emoji'] = get_smile(context.user_data)
     username = update.effective_user.first_name
@@ -41,37 +53,12 @@ def talk_to_me(update, context):
                               Ты написал: {text}')
 
 
-def guess_number(update, context):
-    if context.args:
-        try:
-            user_number = int(context.args[0])
-            message = play_random_numbers(user_number)
-        except (TypeError, ValueError):
-            message = 'Введите целое число'
-    else:
-        message = 'Введите целое число'
-    update.message.reply_text(message)
-
-
 def send_monet_pic(update, context):
     monet_pics_list = glob('images/monet*.jp*g')
     monet_pic_filename = choice(monet_pics_list)
     chat_id = update.effective_chat.id
     context.bot.send_photo(chat_id=chat_id,
                            photo=open(monet_pic_filename, 'rb'))
-
-
-def play_random_numbers(user_number):
-    bot_number = randint(user_number-10, user_number+10)
-    if user_number > bot_number:
-        message = f'Ты загадал {user_number}, я загадал {bot_number}.\n \
-            Ты выиграл!'
-    elif user_number < bot_number:
-        message = f'Ты загадал {user_number}, я загадал {bot_number}. \n \
-        Я выиграл!'
-    else:
-        message = f'Ты загадал {user_number}, я загадал {bot_number}. Ничья!'
-    return message
 
 
 def change_smile(update, context):
@@ -88,14 +75,16 @@ def main():
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler('start', greet_user,
                                   pass_user_data=True))
-    dp.add_handler(CommandHandler('guess', guess_number,
-                                  pass_user_data=True))
     dp.add_handler(CommandHandler('monet', send_monet_pic,
                                   pass_user_data=True))
     dp.add_handler(MessageHandler(Filters.regex('^Даёшь Моне!$'),
                                   send_monet_pic, pass_user_data=True))
     dp.add_handler(MessageHandler(Filters.regex('^Поменять смайлик!$'),
                                   change_smile, pass_user_data=True))
+    dp.add_handler(MessageHandler(Filters.contact, get_contact,
+                                  pass_user_data=True))
+    dp.add_handler(MessageHandler(Filters.location, get_location,
+                                  pass_user_data=True))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me,
                                   pass_user_data=True))
 
