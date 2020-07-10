@@ -19,18 +19,8 @@ def get_smile(user_data):
 
 def greet_user(update, context):
     context.user_data['emoji'] = get_smile(context.user_data)
-    contact_button = KeyboardButton('Прислать контакты',
-                                    request_contact=True)
-    location_button = KeyboardButton('Прислать координаты',
-                                     request_location=True)                                
-    greet_keyboard = ReplyKeyboardMarkup(
-                                         [
-                                          ['Даёшь Моне!', 'Поменять смайлик!'],
-                                          [contact_button, location_button]
-                                         ]
-                                         )
     text = f'Привет! {context.user_data["emoji"]}'
-    update.message.reply_text(text, reply_markup=greet_keyboard)
+    update.message.reply_text(text, reply_markup=get_keyboard())
 
 
 def get_contact(update, context):
@@ -67,6 +57,20 @@ def change_smile(update, context):
     context.user_data['emoji'] = get_smile(context.user_data)
     update.message.reply_text(f'Твой новый смайлик: \n \
                               {context.user_data["emoji"]}')
+
+
+def get_keyboard():
+    contact_button = KeyboardButton('Прислать контакты',
+                                    request_contact=True)
+    location_button = KeyboardButton('Прислать координаты',
+                                     request_location=True)                                
+    greet_keyboard = ReplyKeyboardMarkup(
+                                         [
+                                          ['Даёшь Моне!', 'Поменять смайлик!'],
+                                          [contact_button, location_button]
+                                         ], resize_keyboard=True
+                                         )
+    return greet_keyboard
 
 
 def main():
