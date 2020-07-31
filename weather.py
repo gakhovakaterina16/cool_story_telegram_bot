@@ -1,6 +1,7 @@
 import requests
-from settings import API_KEY_WEATHER
+import settings
 from telegram.ext import ConversationHandler
+from utils import weather_by_city, en_ru_translation
 
 
 def weather_start(update, context):
@@ -8,23 +9,9 @@ def weather_start(update, context):
     return 'get_weather'
 
 
-def weather_by_city(city_name):
-    weather_url = 'http://api.openweathermap.org/data/2.5/weather'
-    params = {
-        'q': city_name,
-        'APPID': API_KEY_WEATHER
-    }
-    result = requests.get(weather_url, params=params)
-    info = result.json()
-    weather_main = info['weather'][0]['main']
-    temp_C = round(info['main']['temp'] - 273.15)
-    return f'{city_name}. {weather_main}. {temp_C}°C.'
-
 def get_weather(update, context):
     city_name = update.message.text
-    try:
-        weather_reply = weather_by_city(city_name)
-    except (ValueError, TypeError):
-        weather_reply = 'Название города в виде: Москва'
-    update.message.reply_text(weather_reply)
+    weather_en = weather_by_city(city_name)
+    weather_ru = en_ru_translation(weather_en)
+    update.message.reply_text(weather_ru)
     return ConversationHandler.END
