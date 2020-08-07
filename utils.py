@@ -15,7 +15,7 @@ def get_keyboard():
     greet_keyboard = ReplyKeyboardMarkup(
                                          [
                                           ['Даёшь Моне!', 'Погода сейчас'],
-                                          ['Интересное о числах (en)']
+                                          ['Интересное о числах en']
                                          ], resize_keyboard=True
                                          )
     return greet_keyboard
@@ -23,15 +23,16 @@ def get_keyboard():
 
 def weather_by_city(city_name):
     weather_url = 'http://api.openweathermap.org/data/2.5/weather'
-    params = {
+    querystring = {
         'q': city_name,
         'APPID': settings.API_KEY_WEATHER
     }
-    result = requests.get(weather_url, params=params)
+    result = requests.get(weather_url, params=querystring)
     info = result.json()
     weather_main = info['weather'][0]['main'].lower()
     temp_C = round(info['main']['temp'] - 273.15)
-    return f'{city_name.capitalize()}: {weather_main}, {temp_C}°C'
+    reply = f'{city_name.capitalize()}: {weather_main}, {temp_C}°C'
+    return reply
 
 def en_ru_translation(word_en):
     translation_url = 'https://api.mymemory.translated.net/get'
@@ -42,3 +43,9 @@ def en_ru_translation(word_en):
     result = requests.get(translation_url, params=params)
     info = result.json()
     return info['responseData']['translatedText']
+
+def nums_facts(num, num_type):
+    url = 'http://numbersapi.com/'
+    result = requests.get(f'{url}{num}/{num_type}')
+    reply = bytes.decode(result.content, encoding='utf-8')
+    return reply
