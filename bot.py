@@ -6,6 +6,7 @@ from handlers import (greet_user, talk_to_me, send_monet_pic)
 from weather import weather_start, get_weather
 from nums_info import (nums_start, get_info_type, 
                        get_nums_facts)
+from get_news import final_get_news
 
 
 logging.basicConfig(filename='bot.log', level=logging.INFO)
@@ -25,7 +26,7 @@ def main():
     )
 
     nums_info = ConversationHandler(
-        entry_points=[MessageHandler(Filters.regex('^(Интересное о числах en)$'),
+        entry_points=[MessageHandler(Filters.regex('^(Интересное о числах)$'),
                                                    nums_start)],
         states={'info_type': [MessageHandler(Filters.text,
                                              get_info_type)],
@@ -45,6 +46,8 @@ def main():
                                   pass_user_data=True))                         
     dp.add_handler(MessageHandler(Filters.regex('^(Даёшь Моне!)$'),
                                   send_monet_pic, pass_user_data=True))
+    dp.add_handler(MessageHandler(Filters.regex('^(Новость)$'),
+                                  final_get_news, pass_user_data=True))                                  
     dp.add_handler(MessageHandler(Filters.text, talk_to_me,
                                   pass_user_data=True))
 

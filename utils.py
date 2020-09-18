@@ -15,7 +15,7 @@ def get_keyboard():
     greet_keyboard = ReplyKeyboardMarkup(
                                          [
                                           ['Даёшь Моне!', 'Погода сейчас'],
-                                          ['Интересное о числах en']
+                                          ['Интересное о числах'], ['Новость']
                                          ], resize_keyboard=True
                                          )
     return greet_keyboard

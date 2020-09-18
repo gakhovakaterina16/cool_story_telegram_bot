@@ -23,4 +23,3 @@ def send_monet_pic(update, context):
     chat_id = update.effective_chat.id
     context.bot.send_photo(chat_id=chat_id,
                            photo=open(monet_pic_filename, 'rb'))
-
