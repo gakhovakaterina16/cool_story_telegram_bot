@@ -1,7 +1,8 @@
 import logging
 import settings
 from telegram.ext import (Updater, CommandHandler, 
-                          MessageHandler, Filters, ConversationHandler)
+                          MessageHandler, Filters, ConversationHandler,
+                          CallbackQueryHandler)
 from handlers import (greet_user, talk_to_me, send_monet_pic)
 from weather import weather_start, get_weather
 from nums_info import (nums_start, get_info_type, 
@@ -50,6 +51,7 @@ def main():
                                   final_get_news, pass_user_data=True))                                  
     dp.add_handler(MessageHandler(Filters.text, talk_to_me,
                                   pass_user_data=True))
+    dp.add_handler(CallbackQueryHandler(get_nums_facts, pattern="^(nums_type|)"))
 
     logging.info('The bot has started!')
     mybot.start_polling()

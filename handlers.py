@@ -1,6 +1,6 @@
 from glob import glob
 from random import choice
-from utils import get_smile, get_keyboard, weather_by_city
+from utils import (get_smile, get_keyboard, weather_by_city)
 
 
 def greet_user(update, context):
