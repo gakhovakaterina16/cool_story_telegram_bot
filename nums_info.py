@@ -6,6 +6,7 @@ from utils import (nums_facts, en_ru_translation,
 
 def nums_start(update, context):
     update.message.reply_text('Введите число')
+    print(update.message.text)
     return 'info_type'
 
 
@@ -21,12 +22,11 @@ def get_info_type(update, context):
 def get_nums_facts(update, context):
     update.callback_query.answer()
     fact_type = str(update.callback_query.data).replace('nums_type', '')
-    if fact_type == 'math' or 'trivia':
-        reply = nums_facts(context.user_data['num'], fact_type)
-        chat_id = update.effective_chat.id
-        context.bot.send_message(chat_id=chat_id, text=reply)   
+    reply = nums_facts(context.user_data['num'], fact_type)
+    chat_id = update.effective_chat.id
+    context.bot.send_message(chat_id=chat_id, text='dfsjdfkjhkj')
+    update.callback_query.answer()   
     context.bot.send_message(chat_id=chat_id, text='перевести на русский?',
                              reply_markup=ru_en_choice_keyboard())
-    update.callback_query.answer()
-    print(update.callback_query.data)
+
     return ConversationHandler.END

@@ -51,7 +51,7 @@ def main():
                                   final_get_news, pass_user_data=True))                                  
     dp.add_handler(MessageHandler(Filters.text, talk_to_me,
                                   pass_user_data=True))
-    dp.add_handler(CallbackQueryHandler(get_nums_facts, pattern="^(nums_type|)"))
+    dp.add_handler(CallbackQueryHandler(get_nums_facts, pattern='^(nums_type|)'))
 
     logging.info('The bot has started!')
     mybot.start_polling()

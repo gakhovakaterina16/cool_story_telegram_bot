@@ -53,6 +53,18 @@ def nums_facts(num, num_type):
     return reply
 
 
+def intro_inline_keyboard():
+    callback_text = f'intro'
+    inlinekeyboard = [
+        [
+            InlineKeyboardButton('Даёшь Моне!', callback_data=callback_text + 'моне'),
+            InlineKeyboardButton('Новость', callback_data=callback_text + 'новость'),
+            InlineKeyboardButton('Погода сейчас', callback_data=callback_text + 'погода'),
+            InlineKeyboardButton('Интересное о числах', callback_data=callback_text + 'число')
+        ]
+    ]
+
+
 def nums_type_inline_keyboard():
     callback_text = f'nums_type'
     inlinekeyboard = [
