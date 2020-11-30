@@ -22,11 +22,6 @@ def get_info_type(update, context):
 def get_nums_facts(update, context):
     update.callback_query.answer()
     fact_type = str(update.callback_query.data).replace('nums_type', '')
-    reply = nums_facts(context.user_data['num'], fact_type)
-    chat_id = update.effective_chat.id
-    context.bot.send_message(chat_id=chat_id, text='dfsjdfkjhkj')
-    update.callback_query.answer()   
-    context.bot.send_message(chat_id=chat_id, text='перевести на русский?',
-                             reply_markup=ru_en_choice_keyboard())
-
+    reply_ru = en_ru_translation(nums_facts(context.user_data['num'], fact_type))
+    update.message.reply_text(reply_ru)
     return ConversationHandler.END
