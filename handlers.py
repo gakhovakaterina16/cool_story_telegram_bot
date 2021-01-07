@@ -1,6 +1,7 @@
 from glob import glob
 from random import choice
 from utils import (get_smile, get_keyboard, weather_by_city)
+from db import db, get_user_story
 
 
 def greet_user(update, context):
@@ -23,3 +24,8 @@ def send_monet_pic(update, context):
     chat_id = update.effective_chat.id
     context.bot.send_photo(chat_id=chat_id,
                            photo=open(monet_pic_filename, 'rb'))
+
+
+def save_user_story(update, context):
+    update.message.reply_text('Запиши историю')
+

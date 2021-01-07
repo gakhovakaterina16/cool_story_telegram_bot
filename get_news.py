@@ -16,7 +16,7 @@ def get_html(url):
 
 def get_bbc_news(html):
     soup = BeautifulSoup(html, 'html.parser')
-    news_list = soup.find('div', class_='GridComponent-nf79gm-0 dArzWf')
+    news_list = soup.find('div', class_='e1t2pq2f4 css-kegltc-GridComponent-StyledGrid e57qer20')
     news_href = []    
     for a in news_list.find_all('a'):
         news_href.append('https://www.bbc.com' + a.get('href'))
@@ -28,5 +28,3 @@ def final_get_news(update, context):
     if html:
         rand_bbc_news = get_bbc_news(html)
         update.message.reply_text(rand_bbc_news)
-
-    
